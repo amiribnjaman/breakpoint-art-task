@@ -2,13 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function AddRecipeBtn() {
   const [showAddFrom, setShowAddForm] = useState(false);
   const [suggestion, setSuggestion] = useState([]);
   const [ingredients, setIngredients] = useState([]);
   const [inputText, setInputText] = useState("");
-  // console.log(ingredients);
+  const router = useRouter();
 
   const {
     register,
@@ -30,7 +32,6 @@ export default function AddRecipeBtn() {
    * @returns
    */
   const handleAddRecipeForm = async (d) => {
-    console.log(d);
     const data = {
       title: d.title,
       description: d.description,
@@ -41,7 +42,11 @@ export default function AddRecipeBtn() {
       body: JSON.stringify(data),
     });
     const result = await res.json();
-    console.log(result);
+    if (result.success) {
+      toast.success("New Recipe created Successfully!");
+      router.refresh();
+      setShowAddForm(!showAddFrom);
+    }
 
     reset();
   };
@@ -83,7 +88,9 @@ export default function AddRecipeBtn() {
         <div className="flex justify-between mb-2 items-center">
           <h3 className="text-center text-xl">Add a new Recipe</h3>
           <div className="text-4xl">
-            <button onClick={() => setShowAddForm(!showAddFrom)}>&times;</button>
+            <button onClick={() => setShowAddForm(!showAddFrom)}>
+              &times;
+            </button>
           </div>
         </div>
         <input

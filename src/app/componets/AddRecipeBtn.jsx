@@ -30,7 +30,7 @@ export default function AddRecipeBtn() {
    * @returns
    */
   const handleAddRecipeForm = async (d) => {
-    console.log(d)
+    console.log(d);
     const data = {
       title: d.title,
       description: d.description,
@@ -48,7 +48,7 @@ export default function AddRecipeBtn() {
 
   const handleSuggestion = (event) => {
     const text = event.target.value.toLowerCase();
-    console.log(text)
+    console.log(text);
     const filteredSuggestion = ingredients.filter((ingredient) =>
       // console.log()
       ingredient.label.toLowerCase.includes(text)
@@ -79,7 +79,13 @@ export default function AddRecipeBtn() {
         } absolute top-[110px] left-[420px] flex flex-col gap-2 w-[450px] min-h-[200px] bg-[#f2f6f3] px-4 py-5 rounded-lg `}
         action=""
       >
-        <h3 className="text-center text-xl mb-2">Add a new Recipe</h3>
+        {/*============FORM HEADING============ */}
+        <div className="flex justify-between mb-2 items-center">
+          <h3 className="text-center text-xl">Add a new Recipe</h3>
+          <div className="text-4xl">
+            <button onClick={() => setShowAddForm(!showAddFrom)}>&times;</button>
+          </div>
+        </div>
         <input
           {...register("title", { required: true })}
           aria-invalid={errors.title ? "true" : "false"}
@@ -126,13 +132,11 @@ export default function AddRecipeBtn() {
           type="file"
         /> */}
         <textarea
-          {...register("description", { required: false })}
           aria-invalid={errors.description ? "true" : "false"}
-          name=""
-          id=""
           cols="10"
           rows="4"
           className="p-3"
+          {...register("description", { required: true })}
         ></textarea>
         {errors.description?.type === "required" && (
           <p

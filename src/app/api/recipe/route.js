@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import bodyParser from "body-parser";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -11,7 +10,7 @@ export const config = {
 };
 
 /**
- * POST A NEW RECIPE
+ * POST/CREATE A NEW RECIPE
  * @param {*} req USER REQUESTED DATA
  * @param {*} res RESPONSE
  * @returns
@@ -35,7 +34,7 @@ export async function POST(req, res) {
       },
     });
 
-    console.log(recipe);
+    // console.log(recipe);
     return NextResponse.json({
       success: true,
       msg: "Recipe created successfully",
@@ -58,7 +57,6 @@ export async function POST(req, res) {
  */
 export async function GET(req, res) {
   try {
-    console.log('ok')
     const data = await prisma.recipe.findMany({
       include: {
         ingredients: true,
@@ -77,3 +75,5 @@ export async function GET(req, res) {
     });
   }
 }
+
+

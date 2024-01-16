@@ -8,7 +8,7 @@ export default function AddRecipeBtn() {
   const [suggestion, setSuggestion] = useState([]);
   const [ingredients, setIngredients] = useState([]);
   const [inputText, setInputText] = useState("");
-  console.log(ingredients);
+  // console.log(ingredients);
 
   const {
     register,

@@ -49,3 +49,31 @@ export async function POST(req, res) {
     });
   }
 }
+
+/**
+ * GET ALL RECIPE DATA
+ * @param {*} req USER REQUESTED DATA
+ * @param {*} res RESPONSE
+ * @returns
+ */
+export async function GET(req, res) {
+  try {
+    console.log('ok')
+    const data = await prisma.recipe.findMany({
+      include: {
+        ingredients: true,
+      },
+    });
+    return NextResponse.json({
+      success: true,
+      msg: "Data retrive successfully",
+      data,
+    });
+  } catch (error) {
+    console.error("Error handling POST request:", error);
+    return NextResponse.json({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+}

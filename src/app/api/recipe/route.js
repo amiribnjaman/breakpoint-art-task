@@ -23,26 +23,17 @@ export async function POST(req, res) {
       data: {
         title: data.title,
         description: data.description,
+        ingredients: {
+          create: data.ingredients.map((ingredient) => ({
+            name: ingredient,
+          })),
+        },
       },
+
       include: {
         ingredients: true,
       },
     });
-
-    await Promise.all(
-      data.ingredients.map(async (ingredient) => {
-        return prisma.ingredient.create({
-          data: {
-            name: ingredient,
-            recipe: {
-              connect: {
-                id: recipe.id,
-              },
-            },
-          },
-        });
-      })
-    );
 
     console.log(recipe);
     return NextResponse.json({

@@ -18,6 +18,7 @@ export const config = {
 export async function POST(req, res) {
   try {
     const data = await req.json();
+    console.log(data)
     const recipe = await prisma.recipe.create({
       data: {
         title: data.title,
@@ -34,7 +35,7 @@ export async function POST(req, res) {
       },
     });
 
-    // console.log(recipe);
+    console.log(recipe);
     return NextResponse.json({
       success: true,
       msg: "Recipe created successfully",

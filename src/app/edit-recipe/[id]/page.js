@@ -1,17 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-export default function AddRecipeBtn() {
-  const [showAddFrom, setShowAddForm] = useState(false);
-  const [suggestion, setSuggestion] = useState([]);
-  const [ingredients, setIngredients] = useState([]);
-  const [inputText, setInputText] = useState("");
+export default function page() {
   const router = useRouter();
-
+  const param = useParams();
+  const { id } = param;
   const {
     register,
     handleSubmit,
@@ -20,78 +17,43 @@ export default function AddRecipeBtn() {
     formState: { errors },
   } = useForm();
 
-  useEffect(() => {
-    fetch("/ingredients.json")
-      .then((res) => res.json())
-      .then((data) => setIngredients(data));
-  }, []);
-
   /**
-   * Add Recipe Form Handler
+   * EDIT RECIPE FORM HANDLER
    * @param {*} data getting the all data
    * @returns
    */
-  const handleAddRecipeForm = async (d) => {
+  const handleEidtRecipeForm = async (d) => {
     const data = {
       title: d.title,
       description: d.description,
       ingredients: d.ingredients.split(","),
     };
-    const res = await fetch("/api/recipe", {
-      method: "POST",
+    const res = await fetch(`/api/recipe/${id}`, {
+      method: "PATCH",
       body: JSON.stringify(data),
     });
+
     const result = await res.json();
     if (result.success) {
-      toast.success("New Recipe created Successfully!");
+      toast.success("Recipe updated Successfully!");
+      router.push("/");
       router.refresh();
-      setShowAddForm(!showAddFrom);
     }
 
     reset();
   };
 
-  const handleSuggestion = (event) => {
-    const text = event.target.value.toLowerCase();
-    console.log(text);
-    const filteredSuggestion = ingredients.filter((ingredient) =>
-      // console.log()
-      ingredient.label.toLowerCase.includes(text)
-    );
-    setInputText(text);
-    setSuggestion(filteredSuggestion);
-  };
-
-  const handleSuggestionClick = (suggestion) => {
-    setInputText(suggestion);
-    setSuggestion([]);
-  };
-
   return (
-    <>
-      <button
-        className="bg-green-600 px-4 py-2 text-white rounded"
-        onClick={() => setShowAddForm(!showAddFrom)}
-      >
-        Add a Recipe
-      </button>
-
-      {/*===========ADD RECIPE FORM==========*/}
+    <div className="w-[60%] mx-auto mt-12">
+      {/*===========EDIT RECIPE FORM==========*/}
       <form
-        onSubmit={handleSubmit(handleAddRecipeForm)}
-        className={`${
-          showAddFrom ? "show" : "hidden"
-        } absolute top-[110px] left-[420px] flex flex-col gap-2 w-[450px] min-h-[200px] bg-[#f2f6f3] px-4 py-5 rounded-lg `}
+        onSubmit={handleSubmit(handleEidtRecipeForm)}
+        className={` left-[420px] flex flex-col gap-2 w-[80%] mx-auto min-h-[200px] bg-[#f2f6f3] px-4 py-5 rounded-lg `}
         action=""
       >
         {/*============FORM HEADING============ */}
         <div className="flex justify-between mb-2 items-center">
-          <h3 className="text-center text-xl">Add a new Recipe</h3>
-          <div className="text-4xl">
-            <button onClick={() => setShowAddForm(!showAddFrom)}>
-              &times;
-            </button>
-          </div>
+          <h3 className="text-center text-xl">Edit Recipe</h3>
         </div>
         <input
           {...register("title", { required: true })}
@@ -117,13 +79,13 @@ export default function AddRecipeBtn() {
           // onChange={handleSuggestion}
           placeholder="Ingredients"
         />
-        <ul>
+        {/* <ul>
           {suggestion.map((suggestion, index) => (
             <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
               {suggestion}
             </li>
           ))}
-        </ul>
+        </ul> */}
         {/*============REPORT INGREDIENTS FIELD ERROR============= */}
         {errors.ingredients?.type === "required" && (
           <p
@@ -156,10 +118,10 @@ export default function AddRecipeBtn() {
 
         <input
           type="submit"
-          value="Add Recipe"
+          value="Edit"
           className="cursor-pointer bg-green-600 text-white mt-3 rounded py-1.5"
         />
       </form>
-    </>
+    </div>
   );
 }

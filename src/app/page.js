@@ -26,7 +26,7 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center w-[80%] mx-auto mt-6">
-      <div className="mt-8 flex justify-between w-full">
+      <div className="mt-8 flex justify-between w-full items-center">
         <h4>All Recipe</h4>
         <AddRecipe />
       </div>
@@ -34,9 +34,9 @@ export default async function Home() {
       {/*=============RECIPE SHOWING================ */}
       <div className="w-full mt-6">
         <div>
-          <div className="grid grid-cols-3 gap-4 ">
+          <div className="grid grid-cols-3 gap-x-4 gap-y-6 ">
             {recipes?.map((recipe, index) => (
-              <div className="bg-gray-100 w-full rounded-lg p-4">
+              <div className="bg-gray-100 w-full rounded-lg p-4 shadow-md">
                 <div>
                   <h4 className="text-center text-[20px] capitalize font-semibold">
                     {recipe?.title}
@@ -54,8 +54,11 @@ export default async function Home() {
                     ))}
                   </ul>
                 </div>
-                <p class="py-2 px-4 w-[90%] mx-auto bg-gray-50 rounded mt-4 text-center">
-                  {recipe.description}
+                <p class="py-2 px-4 w-[90%] mx-auto bg-gray-50 rounded mt-4 text-left">
+                  <span className="text-[15px] font-semibold pr-4">
+                    Instruction:
+                  </span>
+                  {recipe?.description}
                 </p>
                 <div class="py-2 px-4 flex justify-center mt-4 gap-4 text-right">
                   <Link

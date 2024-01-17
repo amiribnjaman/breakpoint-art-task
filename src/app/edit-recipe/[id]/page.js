@@ -151,12 +151,14 @@ export default function page() {
             {selectedItems.map((item, index) => (
               <div className="bg-[#dcdede] px-[6px] py-[1px] rounded text-[12px] relative">
                 {item}
-                <div
-                  className="absolute cursor-pointer top-[-8px] right-[-5px] text-[15px]"
-                  onClick={() => deleteSelectedItem(item)}
-                >
-                  &times;
-                </div>
+                {selectedItems.length > 1 && (
+                  <div
+                    className="absolute cursor-pointer top-[-8px] right-[-5px] text-[15px]"
+                    onClick={() => deleteSelectedItem(item)}
+                  >
+                    &times;
+                  </div>
+                )}
               </div>
             ))}
           </div>

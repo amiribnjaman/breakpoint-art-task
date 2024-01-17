@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <Toaster position="bottom-center" />
       <body className={inter.className}>
-        <main className="pt-24">
+        <main className="pt-20 mb-10">
           <h1 className="text-4xl font-bold text-center">Recipe app</h1>
           {children}
         </main>

@@ -45,7 +45,9 @@ export async function PATCH(req, res) {
   const urlParts = req.url.split("/");
   const idIndex = urlParts.indexOf("recipe") + 1;
   const id = urlParts[idIndex];
-  const data = await req
+  const data = await req.json();
+
+  console.log("length is " + data, data.ingredients.length);
 
   const result = await prisma.recipe.update({
     where: {
@@ -56,9 +58,12 @@ export async function PATCH(req, res) {
       description: data?.description,
       ingredients: {
         deleteMany: {}, // Delete all previous existing ingredients
-        create: data.ingredients.map((ingredient) => ({
-          name: ingredient,
-        })),
+        create:
+          data.ingredients.length > 0
+            ? data?.ingredients.map((ingredient) => ({
+                name: ingredient,
+              }))
+            : [],
       },
     },
 
@@ -85,7 +90,7 @@ export async function GET(req, res) {
   const urlParts = req.url.split("/");
   const idIndex = urlParts.indexOf("recipe") + 1;
   const id = urlParts[idIndex];
-  console.log(id);
+  // console.log(id);
   const recipe = await prisma.recipe.findUnique({
     where: {
       id: parseInt(id),
@@ -95,7 +100,7 @@ export async function GET(req, res) {
     },
   });
 
-  console.log(recipe);
+  // console.log(recipe);
   return NextResponse.json({
     success: true,
     msg: "Recipe find successfully",

@@ -5,17 +5,21 @@ import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
+
+  let selectedItems = [];
 export default function page() {
   const router = useRouter();
   const param = useParams();
+  const [suggestion, setSuggestion] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
   const [ingredient, setIngredient] = useState(null);
+  const [inputText, setInputText] = useState("");
   const [inputValues, setInputValues] = useState({
     title: "",
     description: "",
     ingredients: [],
   });
   const { id } = param;
-  console.log(ingredient);
 
   const {
     register,
@@ -24,6 +28,7 @@ export default function page() {
     reset,
     formState: { errors },
   } = useForm();
+
 
   /***
    *
@@ -34,7 +39,19 @@ export default function page() {
       .then((res) => res.json())
       .then((data) => {
         setIngredient(data.recipe);
-        console.log(data.recipe);
+        selectedItems = data.recipe.ingredients.map(
+          (ingredient) => ingredient.name
+        );
+      });
+
+    /***
+     *
+     * FETCHING INGREDIENTS USING USEMEMO
+     */
+    fetch("/ingredients.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setIngredients(data);
       });
   }, []);
 
@@ -47,13 +64,13 @@ export default function page() {
     /**
      * INVERT STRING INTO ARRAY THROUGH SPLIT & FILTER OUT THE EAMPTY ELEMENT FORM THE ARRAY
      */
-    const newIngredient =
-      d.ingredients.split(",").filter((ingredient) => ingredient).length > 0 &&
-      d.ingredients.split(",");
+    // const newIngredient =
+    //   d.ingredients.split(",").filter((ingredient) => ingredient).length > 0 &&
+    //   d.ingredients.split(",");
     const data = {
       title: d.title || ingredient.title,
       description: d.description || ingredient.description,
-      ingredients: newIngredient || [],
+      ingredients: selectedItems,
     };
 
     /**
@@ -74,8 +91,45 @@ export default function page() {
     reset();
   };
 
+  /**
+   * HANDLE SUGGESTION FUNCTION
+   * @param {*} event getting event
+   */
+  const handleSuggestion = (event) => {
+    const text = event.target.value.toLowerCase();
+    const filteredSuggestion = ingredients.filter((ingredient) =>
+      ingredient.label.toLowerCase().includes(text)
+    );
+    setInputText(text);
+    setSuggestion(filteredSuggestion);
+  };
+
+  /**
+   * SUGGESTION VALUE SELECTION HANDLE FUNCTION
+   * @param {*} suggestion
+   */
+  const handleSuggestionClick = (selectedItem) => {
+    // selectedItem();
+    selectedItems.push(selectedItem);
+    console.log(selectedItems);
+    setSuggestion([]);
+  };
+
+  /**
+   * REMOVE SELECTED RECIPE INGREDIENTS
+   * @param {*} suggestion
+   */
+  const deleteSelectedItem = (item) => {
+    const index = selectedItems.indexOf(item);
+    // selectedItems = selectedItems.filter((item, i) => i != index)
+    selectedItems.splice(index, 1)
+    console.log(selectedItems)
+    setSuggestion([]);
+
+  };
+
   return (
-    <div className="w-[60%] mx-auto mt-12">
+    <div className="w-[60%] mx-auto mt-8">
       {/*===========EDIT RECIPE FORM==========*/}
       <form
         onSubmit={handleSubmit(handleEidtRecipeForm)}
@@ -102,19 +156,54 @@ export default function page() {
             Recipe title is required.
           </p>
         )}
-        <label className="text-[12px]">
+
+        {/*=============SHOWING SELECTED INGREDIENTS======= */}
+        {selectedItems.length > 0 && (
+          <div className="flex gap-3 mt-2">
+            {selectedItems.map((item, index) => (
+              <div className="bg-[#dcdede] px-[6px] py-[1px] rounded text-[12px] relative">
+                {item}
+                <div
+                  className="absolute cursor-pointer top-[-8px] right-[-5px] text-[15px]"
+                  onClick={() => deleteSelectedItem(item)}
+                >
+                  &times;
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {/* <label className="text-[12px]">
           Ingredients (Please separate ingredients by coma ',')
-        </label>
+        </label> */}
         <input
           {...register("ingredients", { required: false })}
           aria-invalid={errors.ingredients ? "true" : "false"}
           className="px-2 py-1.5"
           type="text"
-          // onChange={handleSuggestion}
+          onChange={handleSuggestion}
           placeholder={ingredient?.ingredients.map(
             (ingredient) => ingredient?.name + " , "
           )}
         />
+        {/*================ INGREDIENTS SUGGESTION============= */}
+        <div
+          className={`${
+            inputText.length > 0 && suggestion.length > 0 ? "show" : "hidden"
+          } relative`}
+        >
+          <ul className="absolute top-[0px] bg-[#f6faff] w-[80%] overflow-y-auto max-h-[220px] rounded-lg py-4 px-2">
+            {suggestion.map((suggestion, index) => (
+              <li
+                onClick={() => handleSuggestionClick(suggestion.label)}
+                key={index}
+                className="cursor-pointer hover:bg-white px-2 py-1 rounded"
+              >
+                {suggestion.label}
+              </li>
+            ))}
+          </ul>
+        </div>
         {/*============REPORT INGREDIENTS FIELD ERROR============= */}
         {errors.ingredients?.type === "required" && (
           <p

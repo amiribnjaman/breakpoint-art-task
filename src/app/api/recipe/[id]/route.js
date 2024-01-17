@@ -47,6 +47,9 @@ export async function PATCH(req, res) {
   const id = urlParts[idIndex];
   const data = await req.json();
 
+  console.log(data.ingredients)
+  // return
+
   const result = await prisma.recipe.update({
     where: {
       id: parseInt(id),
@@ -55,6 +58,7 @@ export async function PATCH(req, res) {
       title: data?.title,
       description: data?.description,
       ingredients: {
+        deleteMany: {}, // Delete all existing ingredients
         create: data.ingredients.map((ingredient) => ({
           name: ingredient,
         })),

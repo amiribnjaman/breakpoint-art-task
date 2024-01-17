@@ -44,11 +44,21 @@ export default function page() {
    * @returns
    */
   const handleEidtRecipeForm = async (d) => {
+    /**
+     * INVERT STRING INTO ARRAY THROUGH SPLIT & FILTER OUT THE EAMPTY ELEMENT FORM THE ARRAY
+     */
+    const newIngredient =
+      d.ingredients.split(",").filter((ingredient) => ingredient).length > 0 &&
+      d.ingredients.split(",");
     const data = {
       title: d.title || ingredient.title,
       description: d.description || ingredient.description,
-      ingredients: d.ingredients.split(",") || ingredient.ingredients,
+      ingredients: newIngredient || [],
     };
+
+    /**
+     * HIT THE API FOR UPDATE THE RECIPE
+     */
     const res = await fetch(`/api/recipe/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -92,6 +102,9 @@ export default function page() {
             Recipe title is required.
           </p>
         )}
+        <label className="text-[12px]">
+          Ingredients (Please separate ingredients by coma ',')
+        </label>
         <input
           {...register("ingredients", { required: false })}
           aria-invalid={errors.ingredients ? "true" : "false"}

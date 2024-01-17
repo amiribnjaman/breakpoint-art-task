@@ -18,15 +18,17 @@ export const config = {
 export async function POST(req, res) {
   try {
     const data = await req.json();
-    console.log(data)
+    console.log(data);
     const recipe = await prisma.recipe.create({
       data: {
         title: data.title,
         description: data.description,
         ingredients: {
-          create: data.ingredients.map((ingredient) => ({
-            name: ingredient,
-          })),
+          create:
+            data?.ingredients.length > 0 &&
+            data?.ingredients.map((ingredient) => ({
+              name: ingredient,
+            })),
         },
       },
 
@@ -76,5 +78,3 @@ export async function GET(req, res) {
     });
   }
 }
-
-

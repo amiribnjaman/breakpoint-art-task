@@ -5,8 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-
-  let selectedItems = [];
+let selectedItems = [];
 export default function page() {
   const router = useRouter();
   const param = useParams();
@@ -15,9 +14,8 @@ export default function page() {
   const [ingredient, setIngredient] = useState(null);
   const [inputText, setInputText] = useState("");
   const [inputValues, setInputValues] = useState({
-    title: "",
-    description: "",
-    ingredients: [],
+    title: ingredient?.title,
+    description: ingredient?.description,
   });
   const { id } = param;
 
@@ -28,7 +26,6 @@ export default function page() {
     reset,
     formState: { errors },
   } = useForm();
-
 
   /***
    *
@@ -61,12 +58,6 @@ export default function page() {
    * @returns
    */
   const handleEidtRecipeForm = async (d) => {
-    /**
-     * INVERT STRING INTO ARRAY THROUGH SPLIT & FILTER OUT THE EAMPTY ELEMENT FORM THE ARRAY
-     */
-    // const newIngredient =
-    //   d.ingredients.split(",").filter((ingredient) => ingredient).length > 0 &&
-    //   d.ingredients.split(",");
     const data = {
       title: d.title || ingredient.title,
       description: d.description || ingredient.description,
@@ -122,11 +113,17 @@ export default function page() {
   const deleteSelectedItem = (item) => {
     const index = selectedItems.indexOf(item);
     // selectedItems = selectedItems.filter((item, i) => i != index)
-    selectedItems.splice(index, 1)
-    console.log(selectedItems)
+    selectedItems.splice(index, 1);
+    console.log(selectedItems);
     setSuggestion([]);
-
   };
+
+  const handleOnChangeInput = (e) => {
+    setInputValues({ ...inputValues, title: e.target.value });
+    console.log(e.target.value);
+  };
+
+  console.log(inputValues);
 
   return (
     <div className="w-[60%] mx-auto mt-8">
@@ -142,9 +139,13 @@ export default function page() {
         </div>
         <input
           {...register("title", { required: false })}
-          aria-invalid={errors.title ? "true" : "false"}
+          // aria-invalid={errors.title ? "true" : "false"}
           className="px-2 py-1.5"
           type="text"
+          value={inputValues?.title || ingredient?.title}
+          onChange={(e) =>
+            setInputValues({ ...inputValues, title: e.target.value })
+          }
           placeholder={ingredient?.title}
         />
         {/*============REPORT NAME FIELD ERROR============= */}
@@ -219,12 +220,16 @@ export default function page() {
           type="file"
         /> */}
         <textarea
-          aria-invalid={errors.description ? "true" : "false"}
+          // aria-invalid={errors.description ? "true" : "false"}
           cols="10"
           rows="4"
           className="p-3"
           {...register("description", { required: false })}
-          placeholder={ingredient?.description}
+          // placeholder={ingredient?.description}
+          value={inputValues?.description || ingredient?.description}
+          onChange={(e) =>
+            setInputValues({ ...inputValues, description: e.target.value })
+          }
         ></textarea>
         {errors.description?.type === "required" && (
           <p

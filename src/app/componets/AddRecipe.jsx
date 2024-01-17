@@ -78,7 +78,6 @@ export default function AddRecipe() {
   const handleSuggestionClick = (selectedItem) => {
     // selectedItem();
     selectedItems.push(selectedItem);
-    console.log(selectedItems);
     setSuggestion([]);
   };
 

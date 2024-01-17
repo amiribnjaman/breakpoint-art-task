@@ -22,7 +22,6 @@ export default function page() {
   const {
     register,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
   } = useForm();
@@ -102,28 +101,18 @@ export default function page() {
   const handleSuggestionClick = (selectedItem) => {
     // selectedItem();
     selectedItems.push(selectedItem);
-    console.log(selectedItems);
     setSuggestion([]);
   };
 
   /**
    * REMOVE SELECTED RECIPE INGREDIENTS
-   * @param {*} suggestion
+   * @param {*} getting the clicked item
    */
   const deleteSelectedItem = (item) => {
     const index = selectedItems.indexOf(item);
-    // selectedItems = selectedItems.filter((item, i) => i != index)
     selectedItems.splice(index, 1);
-    console.log(selectedItems);
     setSuggestion([]);
   };
-
-  const handleOnChangeInput = (e) => {
-    setInputValues({ ...inputValues, title: e.target.value });
-    console.log(e.target.value);
-  };
-
-  console.log(inputValues);
 
   return (
     <div className="w-[60%] mx-auto mt-8">
@@ -139,14 +128,12 @@ export default function page() {
         </div>
         <input
           {...register("title", { required: false })}
-          // aria-invalid={errors.title ? "true" : "false"}
           className="px-2 py-1.5"
           type="text"
           value={inputValues?.title || ingredient?.title}
           onChange={(e) =>
             setInputValues({ ...inputValues, title: e.target.value })
           }
-          placeholder={ingredient?.title}
         />
         {/*============REPORT NAME FIELD ERROR============= */}
         {errors.title?.type === "required" && (
@@ -174,9 +161,6 @@ export default function page() {
             ))}
           </div>
         )}
-        {/* <label className="text-[12px]">
-          Ingredients (Please separate ingredients by coma ',')
-        </label> */}
         <input
           {...register("ingredients", { required: false })}
           aria-invalid={errors.ingredients ? "true" : "false"}
@@ -214,18 +198,11 @@ export default function page() {
             Atleast one ingredients is must.
           </p>
         )}
-        {/* <input
-          {...register("image", { required: false })}
-          className="px-2 py-1.5 bg-white"
-          type="file"
-        /> */}
         <textarea
-          // aria-invalid={errors.description ? "true" : "false"}
           cols="10"
           rows="4"
           className="p-3"
           {...register("description", { required: false })}
-          // placeholder={ingredient?.description}
           value={inputValues?.description || ingredient?.description}
           onChange={(e) =>
             setInputValues({ ...inputValues, description: e.target.value })

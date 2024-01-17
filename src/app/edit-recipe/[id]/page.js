@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -8,7 +8,15 @@ import toast from "react-hot-toast";
 export default function page() {
   const router = useRouter();
   const param = useParams();
+  const [ingredient, setIngredient] = useState(null);
+  const [inputValues, setInputValues] = useState({
+    title: "",
+    description: "",
+    ingredients: [],
+  });
   const { id } = param;
+  console.log(ingredient);
+
   const {
     register,
     handleSubmit,
@@ -17,6 +25,19 @@ export default function page() {
     formState: { errors },
   } = useForm();
 
+  /***
+   *
+   * FETCHING A SPECIFIC RECIPE THROUGH ID
+   */
+  useEffect(() => {
+    fetch(`/api/recipe/${id}`, { method: "GET" })
+      .then((res) => res.json())
+      .then((data) => {
+        setIngredient(data.recipe);
+        console.log(data.recipe);
+      });
+  }, []);
+
   /**
    * EDIT RECIPE FORM HANDLER
    * @param {*} data getting the all data
@@ -24,9 +45,9 @@ export default function page() {
    */
   const handleEidtRecipeForm = async (d) => {
     const data = {
-      title: d.title,
-      description: d.description,
-      ingredients: d.ingredients.split(","),
+      title: d.title || ingredient.title,
+      description: d.description || ingredient.description,
+      ingredients: d.ingredients.split(",") || ingredient.ingredients,
     };
     const res = await fetch(`/api/recipe/${id}`, {
       method: "PATCH",
@@ -56,11 +77,11 @@ export default function page() {
           <h3 className="text-center text-xl">Edit Recipe</h3>
         </div>
         <input
-          {...register("title", { required: true })}
+          {...register("title", { required: false })}
           aria-invalid={errors.title ? "true" : "false"}
           className="px-2 py-1.5"
           type="text"
-          placeholder="Recipe title"
+          placeholder={ingredient?.title}
         />
         {/*============REPORT NAME FIELD ERROR============= */}
         {errors.title?.type === "required" && (
@@ -72,20 +93,15 @@ export default function page() {
           </p>
         )}
         <input
-          {...register("ingredients", { required: true })}
+          {...register("ingredients", { required: false })}
           aria-invalid={errors.ingredients ? "true" : "false"}
           className="px-2 py-1.5"
           type="text"
           // onChange={handleSuggestion}
-          placeholder="Ingredients"
+          placeholder={ingredient?.ingredients.map(
+            (ingredient) => ingredient?.name + " , "
+          )}
         />
-        {/* <ul>
-          {suggestion.map((suggestion, index) => (
-            <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-              {suggestion}
-            </li>
-          ))}
-        </ul> */}
         {/*============REPORT INGREDIENTS FIELD ERROR============= */}
         {errors.ingredients?.type === "required" && (
           <p
@@ -105,7 +121,8 @@ export default function page() {
           cols="10"
           rows="4"
           className="p-3"
-          {...register("description", { required: true })}
+          {...register("description", { required: false })}
+          placeholder={ingredient?.description}
         ></textarea>
         {errors.description?.type === "required" && (
           <p

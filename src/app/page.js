@@ -39,6 +39,7 @@ export default async function Home() {
               <tr class="bg-gray-200 text-right">
                 <th class="py-2 px-4 border-r">ID</th>
                 <th class="py-2 px-4 border-r w-2/6">Title</th>
+                <th class="py-2 px-4 border-r">Ingredients</th>
                 <th class="py-2 px-4 border-r">Desciption</th>
                 <th class="py-2 px-4 w-1/6">Actions</th>
               </tr>
@@ -48,6 +49,13 @@ export default async function Home() {
                 <tr key={index} class="hover:bg-gray-50 text-right ">
                   <td class="py-2 px-4 border-r">{recipe.id}</td>
                   <td class="py-2 px-4 border-r">{recipe.title}</td>
+                  <td class="py-2 px-4 border-r flex gap-2 text-right justify-end">
+                    {recipe.ingredients.map((ingredient) => (
+                      <span className="bg-[#dcdede] px-[6px] py-[1px] rounded text-[12px]">
+                        {ingredient.name}
+                      </span>
+                    ))}
+                  </td>
                   <td class="py-2 px-4 border-r">{recipe.description}</td>
                   <td class="py-2 px-4 flex justify-end gap-4 text-right">
                     <RecipeDelete id={recipe.id} />

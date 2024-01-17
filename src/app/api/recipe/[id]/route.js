@@ -47,8 +47,6 @@ export async function PATCH(req, res) {
   const id = urlParts[idIndex];
   const data = await req.json();
 
-  console.log(id, data);
-
   const result = await prisma.recipe.update({
     where: {
       id: parseInt(id),
@@ -68,10 +66,38 @@ export async function PATCH(req, res) {
     },
   });
 
-  console.log(result);
   return NextResponse.json({
     success: true,
     msg: "Recipe updated successfully",
     result,
+  });
+}
+
+/**
+ * GETTING A SPECIFIC DATA USING ID
+ * @param {*} req USER REQUESTED DATA
+ * @param {*} res RESPONSE
+ * @returns
+ */
+
+export async function GET(req, res) {
+  const urlParts = req.url.split("/");
+  const idIndex = urlParts.indexOf("recipe") + 1;
+  const id = urlParts[idIndex];
+  console.log(id);
+  const recipe = await prisma.recipe.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+    include: {
+      ingredients: true,
+    },
+  });
+
+  console.log(recipe);
+  return NextResponse.json({
+    success: true,
+    msg: "Recipe find successfully",
+    recipe,
   });
 }

@@ -21,7 +21,11 @@ export default function AddRecipe() {
     formState: { errors },
   } = useForm();
 
-  useMemo(() => {
+  /***
+   *
+   * FETCHING INGREDIENTS USING USEMEMO
+   */
+  useEffect(() => {
     fetch("/ingredients.json")
       .then((res) => res.json())
       .then((data) => setIngredients(data));
@@ -59,12 +63,9 @@ export default function AddRecipe() {
    */
   const handleSuggestion = (event) => {
     const text = event.target.value.toLowerCase();
-    console.log(text);
-    // return;
     const filteredSuggestion = ingredients.filter((ingredient) =>
       ingredient.label.toLowerCase().includes(text)
     );
-    console.log(filteredSuggestion);
     setInputText(text);
     setSuggestion(filteredSuggestion);
   };
@@ -136,14 +137,20 @@ export default function AddRecipe() {
         )}
         <input
           {...register("ingredients", { required: true })}
-          aria-invalid={errors.ingredients || selectedItems.length < 1 ? "true" : "false"}
+          aria-invalid={
+            errors.ingredients || selectedItems.length < 1 ? "true" : "false"
+          }
           className="px-2 py-1.5"
           type="text"
           onChange={handleSuggestion}
           placeholder="Ingredients"
         />
         {/*================ INGREDIENTS SUGGESTION============= */}
-        <div className={`${inputText.length > 0 && suggestion.length > 0 ? "show" : "hidden"} relative`}>
+        <div
+          className={`${
+            inputText.length > 0 && suggestion.length > 0 ? "show" : "hidden"
+          } relative`}
+        >
           <ul className="absolute top-[5px] bg-[#f6faff] w-[80%] overflow-y-auto max-h-[270px] rounded-lg py-4 px-2">
             {suggestion.map((suggestion, index) => (
               <li

@@ -61,11 +61,9 @@ export default function page() {
       title: d.title || ingredient.title,
       description: d.description || ingredient.description,
       ingredients: selectedItems,
+      img: ingredient.img
     };
 
-    /**
-     * HIT THE API FOR UPDATE THE RECIPE
-     */
     const res = await fetch(`/api/recipe/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -116,6 +114,12 @@ export default function page() {
 
   return (
     <div className="w-[60%] mx-auto mt-8">
+      {/*==============GO BACK ARROW SIGN============== */}
+      <div className="w-[80%] mx-auto mb-2">
+        <button onClick={() => router.back()} className="text-[30px]">
+          &#8592;
+        </button>
+      </div>
       {/*===========EDIT RECIPE FORM==========*/}
       <form
         onSubmit={handleSubmit(handleEidtRecipeForm)}

@@ -47,7 +47,7 @@ export async function PATCH(req, res) {
   const id = urlParts[idIndex];
   const data = await req.json();
 
-  console.log("length is " + data, data.ingredients.length);
+  // console.log("length is " + data, data.ingredients.length);
 
   const result = await prisma.recipe.update({
     where: {
@@ -65,6 +65,7 @@ export async function PATCH(req, res) {
               }))
             : [],
       },
+      img: data.img,
     },
 
     include: {

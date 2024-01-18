@@ -27,7 +27,7 @@ export default function page() {
     <div className="w-[60%] mx-auto mt-8">
       <div className="flex justify-between my-1 items-center">
         {/*=============BACK ARROW ICON & EDIT RECIPE PAGE LINK============== */}
-        <button onClick={() => router.push("/")} className="text-[30px]">
+        <button onClick={() => router.back()} className="text-[30px]">
           &#8592;
         </button>
         <Link
@@ -38,6 +38,9 @@ export default function page() {
         </Link>
       </div>
       <div className="bg-gray-100 w-full rounded-lg p-4">
+        <div className="h-[180px] bg-gray-100 rounded-tl rounded-tr">
+          <img src={ingredient?.img} className="w-[500px] h-[150px] " alt="" />
+        </div>
         <div>
           <h4 className="text-left text-[24px] capitalize font-semibold">
             {ingredient?.title}

@@ -15,6 +15,7 @@ model Recipe {
   title     String
   description String
   ingredients Ingredient[]
+  img String?
 }
 
 model Ingredient {

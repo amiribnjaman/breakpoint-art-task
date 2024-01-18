@@ -30,6 +30,7 @@ export async function POST(req, res) {
               name: ingredient,
             })),
         },
+        img: data.img,
       },
 
       include: {

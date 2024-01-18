@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 let selectedItems = [];
-export default function AddRecipe() {
+export default function AddRecipe({ reload, setReload }) {
   const [showAddFrom, setShowAddForm] = useState(false);
   const [suggestion, setSuggestion] = useState([]);
   const [ingredients, setIngredients] = useState([]);
@@ -20,6 +20,13 @@ export default function AddRecipe() {
     reset,
     formState: { errors },
   } = useForm();
+
+  /***
+   *
+   * IMAGEBB HOSTING URL
+   */
+  const imgbbKey = "aefb8bb9063d982e8940fd31a2d29f9d";
+  const url = `https://api.imgbb.com/1/upload?key=${imgbbKey}`;
 
   /***
    *
@@ -37,10 +44,28 @@ export default function AddRecipe() {
    * @returns
    */
   const handleAddRecipeForm = async (d) => {
+    let imgUrl;
+
+    // Upload image into imgbb
+    const img = d.image[0];
+    if (img) {
+      let formData = new FormData();
+      formData.append("image", img);
+      await fetch(url, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          imgUrl = data.data.url;
+        });
+    }
+    
     const data = {
       title: d.title,
       description: d.description,
       ingredients: selectedItems,
+      img: imgUrl || "",
     };
     const res = await fetch("/api/recipe", {
       method: "POST",
@@ -50,6 +75,7 @@ export default function AddRecipe() {
     if (result.success) {
       toast.success("New Recipe created Successfully!");
       router.refresh();
+      setReload(!reload);
       setShowAddForm(!showAddFrom);
     }
 
@@ -171,11 +197,11 @@ export default function AddRecipe() {
             Atleast one ingredients is must.
           </p>
         )}
-        {/* <input
+        <input
           {...register("image", { required: false })}
           className="px-2 py-1.5 bg-white"
           type="file"
-        /> */}
+        />
         <textarea
           aria-invalid={errors.description ? "true" : "false"}
           cols="10"

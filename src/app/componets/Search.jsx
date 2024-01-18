@@ -2,16 +2,16 @@
 
 import React, { useEffect } from "react";
 
-export default function Search({ setFilteredValue, recipes }) {
-
+export default function Search({ setFilteredValue, recipes, searchText, setSearchText }) {
   /**
-   * HANDLE SEARCH FILTER FUCTION 
+   * HANDLE SEARCH FILTER FUCTION
    * @param {*} e event
-   * @returns 
-   */ 
+   * @returns
+   */
   const handleSearch = (e) => {
     let searchtitleResult, searchIngredientResult;
     const text = e.target.value.toLowerCase();
+    setSearchText(text)
     searchtitleResult = recipes.filter((recipe) =>
       recipe.title.toLowerCase().includes(text)
     );
@@ -25,6 +25,8 @@ export default function Search({ setFilteredValue, recipes }) {
       return setFilteredValue(searchtitleResult);
     } else if (searchIngredientResult.length > 0) {
       return setFilteredValue(searchIngredientResult);
+    } else {
+      setFilteredValue([]);
     }
   };
 

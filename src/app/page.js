@@ -10,6 +10,7 @@ export default function Home() {
   const [recipes, setRecipes] = useState([]);
   const [filteredValue, setFilteredValue] = useState([]);
   const [reload, setReload] = useState(false);
+  const [searchText, setSearchText] = useState('')
 
   useEffect(() => {
     try {
@@ -34,7 +35,12 @@ export default function Home() {
         <div className="flex gap-4">
           <h4>All Recipe</h4>
           {/*================SEARCH FIELD============ */}
-          <Search setFilteredValue={setFilteredValue} recipes={recipes} />
+          <Search
+            setFilteredValue={setFilteredValue}
+            recipes={recipes}
+            searchText={searchText}
+            setSearchText={setSearchText}
+          />
         </div>
         <AddRecipe reload={reload} setReload={setReload} />
       </div>
@@ -43,17 +49,19 @@ export default function Home() {
       <div className="w-full mt-6">
         <div>
           <div className="grid grid-cols-4 gap-x-4 gap-y-6 ">
-            {filteredValue?.length > 0
+            {searchText && filteredValue?.length > 0
               ? filteredValue?.map((recipe) => (
-                  <div className="bg-gray-100  shadow">
-                    <div className="h-[180px] bg-gray-100 rounded-tl rounded-tr">
-                      <img
+                  <div className="bg-gray-100 rounded-md shadow">
+                    <div className="h-[150px] bg-gray-100">
+                      <Image
                         src={recipe?.img}
                         className="w-full h-[150px] "
                         alt=""
+                        width="100"
+                        height="150"
                       />
                     </div>
-                    <div className="bg-gray-100 w-full rounded-lg p-4 pt-2 shadow-md">
+                    <div className="bg-gray-100 w-full rounded-lg px-4 py-2 shadow-md">
                       <div>
                         <h4 className="text-center text-[20px] capitalize font-semibold">
                           {recipe?.title}
@@ -99,13 +107,16 @@ export default function Home() {
                     </div>
                   </div>
                 ))
-              : recipes?.map((recipe, index) => (
-                  <div className="bg-gray-100  shadow">
-                    <div className="h-[180px] bg-gray-100 rounded-tl rounded-tr">
-                      <img
+              : !searchText &&
+                recipes?.map((recipe, index) => (
+                  <div className="bg-gray-100 rounded-lg shadow">
+                    <div className="h-[150px] bg-gray-100 rounded-tl rounded-tr">
+                      <Image
                         src={recipe?.img}
                         className="w-full h-[150px] "
                         alt=""
+                        width="100"
+                        height="150"
                       />
                     </div>
                     <div className="w-full rounded-lg p-4 shadow-md">
@@ -151,8 +162,14 @@ export default function Home() {
                   </div>
                 ))}
           </div>
-          {recipes.length < 1 && (
+          {recipes.length < 1 ? (
             <p className="text-center mt-12 text-xl">There is no Recipe.</p>
+          ) : filteredValue < 1 ? (
+            <p className="text-center mt-12 text-xl">
+              There is specific Recipe on your Search.
+            </p>
+          ) : (
+            ""
           )}
         </div>
       </div>

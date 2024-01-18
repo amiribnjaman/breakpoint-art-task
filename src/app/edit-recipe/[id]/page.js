@@ -113,7 +113,7 @@ export default function page() {
   };
 
   return (
-    <div className="w-[60%] mx-auto mt-8">
+    <div className="w-[60%] mx-auto my-8 pb-8">
       {/*==============GO BACK ARROW SIGN============== */}
       <div className="w-[80%] mx-auto mb-2">
         <button onClick={() => router.back()} className="text-[30px]">

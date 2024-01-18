@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function page() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function page() {
   }, []);
 
   return (
-    <div className="w-[60%] mx-auto mt-8">
+    <div className="w-[60%] mx-auto mt-8 pb-8">
       <div className="flex justify-between my-1 items-center">
         {/*=============BACK ARROW ICON & EDIT RECIPE PAGE LINK============== */}
         <button onClick={() => router.back()} className="text-[30px]">
@@ -37,11 +38,17 @@ export default function page() {
           Edit
         </Link>
       </div>
-      <div className="bg-gray-100 w-full rounded-lg p-4">
+      <div className="bg-gray-100 w-full rounded-lg p-4 mb-12">
         <div className="h-[180px] bg-gray-100 rounded-tl rounded-tr">
-          <img src={ingredient?.img} className="w-[500px] h-[150px] " alt="" />
+          <Image
+            src={ingredient?.img}
+            className="w-[400px] h-[200px] "
+            alt=""
+            width="100"
+            height="150"
+          />
         </div>
-        <div>
+        <div className="mt-12">
           <h4 className="text-left text-[24px] capitalize font-semibold">
             {ingredient?.title}
           </h4>
